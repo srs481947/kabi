@@ -1,0 +1,79 @@
+import { useState } from 'react'
+import { Button, Input, Label, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@shadcn/ui"
+import { CurrencyDollar } from "lucide-react"
+
+export default function CurrencyConversion() {
+  const [currency, setCurrency] = useState('USD')
+  const [amount, setAmount] = useState('')
+  const [convertedAmount, setConvertedAmount] = useState('')
+
+  const exchangeRates = {
+    USD: 1,
+    EUR: 0.85,
+    GBP: 0.75,
+    INR: 82.5,
+  }
+
+  const handleCurrencyChange = (value: string) => {
+    setCurrency(value)
+    convertCurrency()
+  }
+const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setAmount(e.target.value)
+    convertCurrency()
+  }
+
+  const convertCurrency = () => {
+    const rate = exchangeRates[currency] || 1
+    const amountValue = parseFloat(amount) || 0
+    setConvertedAmount((amountValue * rate).toFixed(2))
+  }
+
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen bg-white p-4">
+      <div className="max-w-md w-full p-6 bg-gray-100 rounded-lg shadow-md">
+        <h2 className="text-2xl font-bold mb-4">Currency Converter</h2>
+        <div className="mb-4">
+          <Label htmlFor="amount" className="block text-sm font-medium text-gray-700">
+ Amount in USD
+          </Label>
+          <Input
+            id="amount"
+            type="number"
+            value={amount}
+            onChange={handleAmountChange}
+            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+          />
+        </div>
+        <div className="mb-4">
+          <Label htmlFor="currency" className="block text-sm font-medium text-gray-700">
+            Currency
+          </Label>
+          <Select onValueChange={handleCurrencyChange} value={currency}>
+ <SelectTrigger className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+              <SelectValue placeholder="Select a currency" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="USD">USD</SelectItem>
+              <SelectItem value="EUR">EUR</SelectItem>
+              <SelectItem value="GBP">GBP</SelectItem>
+              <SelectItem value="INR">INR</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="mb-4">
+          <Label className="block text-sm font-medium text-gray-700">
+            Converted Amount
+          </Label>
+          <div className="mt-1 flex items-center">
+            <CurrencyDollar className="h-5 w-5 mr-2 text-gray-500" />
+            <span className="text-lg font-bold">{convertedAmount}</span>
+          </div>
+        </div>
+        <Button onClick={convertCurrency} className="w-full">
+          Convert
+        </Button>
+      </div>
+    </div>
+  )
+}
